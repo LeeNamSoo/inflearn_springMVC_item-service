@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -31,6 +29,53 @@ public class BasicItemController {
     public String item(@PathVariable long itemId, Model model){
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
+        return "basic/item";
+    }
+
+    @GetMapping("/add")
+    public String addForm(){
+        return "basic/addForm";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV1(@RequestParam String itemName,
+                       @RequestParam int price,
+                       @RequestParam Integer quantity,
+                       Model model){
+        Item item = new Item();
+        item.setItemName(itemName);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+
+        itemRepository.save(item);
+        model.addAttribute("item",item);
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item, Model model){
+//        @ModelAttribute : 데이터를 객체로 받을 뿐 아니라 지정된 네임태그 기준으로 모델에 자동으로 넣어준다
+        itemRepository.save(item);
+//        model.addAttribute("item",item);
+        return "basic/item";
+    }
+
+//    @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item, Model model){
+//        @ModelAttribute : 데이터를 객체로 받을 뿐 아니라 지정된 네임태그 기준으로 모델에 자동으로 넣어준다,
+//        네임태그가 지정되어 있지 않다면 클래스명(Item -> item)을 기준으로 모델에 담기게 된다.
+        itemRepository.save(item);
+//        model.addAttribute("item",item);
+        return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV4(Item item, Model model){
+//        @ModelAttribute : 데이터를 객체로 받을 뿐 아니라 지정된 네임태그 기준으로 모델에 자동으로 넣어준다,
+//        네임태그가 지정되어 있지 않다면 클래스명(Item -> item)을 기준으로 모델에 담기게 된다.
+//        ModelAttribute는 생략가능하다.
+        itemRepository.save(item);
+//        model.addAttribute("item",item);
         return "basic/item";
     }
 
